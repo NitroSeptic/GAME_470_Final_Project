@@ -3,6 +3,7 @@ using Mirror;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class playerGameController : NetworkBehaviour
 {
@@ -26,6 +27,12 @@ public class playerGameController : NetworkBehaviour
     private float xRotation = 0f, yRotation = 0f;
 
     private bool spawnSetup = false;
+
+    //Powerup bools
+    private bool damageUP = false;
+    private bool speedUP = false;
+
+    private int speedUpCount = 0;
 
     void Start()
     {
@@ -76,6 +83,24 @@ public class playerGameController : NetworkBehaviour
 
             GameObject.Find("gameMechanics").GetComponent<GameMechanics>().Rpc_OnHealthCollected();
         }
+
+        if(other.GetComponent<DamageCollectable>() != null)
+        {
+            if(!damageUP)
+            {
+                damageUP = true;
+                playerWeapon.ModifyDamagePerShotValue(other.GetComponent<DamageCollectable>().DamageUpAmount - 1); //should reduce damage by amount listed in damage powerup.
+            }
+            NetworkServer.Destroy(other); // even if the player can only get their damage raised once, they can still collect the powerup to prevent other players collection
+        }
+
+        if(other.GetComponent<SpeedCollectable>() != null)
+        {
+            speedUP = true;
+            speedUpCount++;
+            NetworkServer.Destroy(other);
+        }
+
     }
 
     private IEnumerator InitDelayed()
@@ -102,6 +127,15 @@ public class playerGameController : NetworkBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
             movSpeed += 5; //Sprint
+        }
+        if(speedUP) //just runs to see if player has picked up a speed up or not. the first will be double as effective as every reccursive speed up
+        {
+            movSpeed += 2;
+
+            for (int i = speedUpCount - 1; i > 0; i--)
+            {
+                movSpeed += 1;
+            }
         }
         Vector3 moveDir = (playerCamera.transform.right * Input.GetAxis("Horizontal"))
             + (Vector3.Cross(playerCamera.transform.right, Vector3.up) * Input.GetAxis("Vertical")); //forward
@@ -150,6 +184,13 @@ public class playerGameController : NetworkBehaviour
         GetComponent<Rigidbody>().useGravity = true;
 
         transform.position = new Vector3(Random.Range(-10f, 10f), 2f, Random.Range(-10f, 10f));
+        
+        //resets powerups
+        damageUP = false;
+        speedUP = false;
+        speedUpCount = 0;
+        playerWeapon.ResetDamagePerShotValue(); // running this to reset the damage up
+        
 
         yield return new WaitForSeconds(0.5f); //Delay allows for full sync across the network
 

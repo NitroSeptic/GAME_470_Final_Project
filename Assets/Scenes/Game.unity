@@ -1456,6 +1456,8 @@ MonoBehaviour:
   numberOfHealthCollectedText: {fileID: 891283450}
   collectables: {fileID: 736442070}
   healthCollectable_prefab: {fileID: 5118511902865356292, guid: bce86211df527d0468d92d5c738ff465, type: 3}
+  damageCollectable_prefab: {fileID: 0}
+  speedCollectable_prefab: {fileID: 0}
   numberOfHealthCollected: 0
 --- !u!114 &1731722314
 MonoBehaviour:
