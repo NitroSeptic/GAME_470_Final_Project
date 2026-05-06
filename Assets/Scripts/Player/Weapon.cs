@@ -11,6 +11,9 @@ public class Weapon : NetworkBehaviour
     public int defaultDamagePerShot = -1;
     public int damagePerShot = -1;
 
+    public float ballPushForce = 15f;
+
+
     public void Shoot(Vector3 shootFromPoint, Vector3 shootDir)
     {
         int origLayer = playerObjectRef.layer;
@@ -26,6 +29,17 @@ public class Weapon : NetworkBehaviour
             {
                 //runs on server only, and the "health" amount will sync thanks to SyncVar
                 hit.transform.GetComponent<playerGameController>().Srv_UpdateHealthDamage(-1);
+            }
+            if (hit.collider.CompareTag("Ball"))
+            {
+                if (isServer)
+                {
+                    Rigidbody rb = hit.collider.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        rb.AddForce(shootDir.normalized * ballPushForce, ForceMode.Impulse);
+                    }
+                }
             }
 
             Rpc_SpawnAtShotHit(hit.point);

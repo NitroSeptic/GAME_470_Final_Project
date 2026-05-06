@@ -9,12 +9,18 @@ using UnityEngine.SceneManagement;
 public class PlayerObjectController : NetworkBehaviour //!!! Essential for all network stuff controlled by mirror
 {
     //[SyncVar] a mirror variable synced across all connections through the host, update on a client updates for host and all other clients in lobby
+    public enum Team
+    {
+        Red,
+        Blue
+    }
 
     //Player (lobby) data
     [SyncVar] public int connectionId;
     [SyncVar] public int playerIdNumber;
     [SyncVar] public ulong playerSteamId;
     [SyncVar] public string playerReadyStatus = "Unready";
+    [SyncVar] public Team teamEnum;
     [SyncVar(hook = nameof(PlayerTeamUpdate))] public string playerTeam;
     [SyncVar(hook = nameof(PlayerNameUpdate))] public string playerUsername; //when "Playerusername" will sync update hook function will be called on all clients
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool isPlayerReady = false;
@@ -54,6 +60,11 @@ public class PlayerObjectController : NetworkBehaviour //!!! Essential for all n
     public override void OnStartClient()
     {
         Manager.gamePlayers.Add(this);
+
+        if (SceneManager.GetActiveScene().name != "Lobby")
+        {
+            ConvertLobbyTeamToEnum();
+        }
         Debug.Log("Client Start: Called on requesting client. Manager: " + Manager.gamePlayers.Count);
     }
 
@@ -99,6 +110,18 @@ public class PlayerObjectController : NetworkBehaviour //!!! Essential for all n
         if (isOwned)
         {
             Cmd_SetPlayerTeam(teamName);
+        }
+    }
+
+    public void ConvertLobbyTeamToEnum()
+    {
+        if (playerTeam == "Blue")
+        {
+            teamEnum = Team.Blue;
+        }
+        else
+        {
+            teamEnum = Team.Red;
         }
     }
 
