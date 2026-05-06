@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class GameMechanics : NetworkBehaviour
 {
+<<<<<<< HEAD
     public static GameMechanics Instance;
 
     [SyncVar] public int redScore = 0;
@@ -15,6 +16,16 @@ public class GameMechanics : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
+=======
+    public static GameMechanics Instance;
+
+    [SyncVar] public int redScore = 0;
+    [SyncVar] public int blueScore = 0;
+
+    private void Awake()
+    {
+        Instance = this;
+>>>>>>> d1f72a7c141fdb9929ec8d7608e60295c74d92b5
     }
     public Camera scene_camera;
     public Text numberOfHealthCollectedText;
@@ -24,6 +35,8 @@ public class GameMechanics : NetworkBehaviour
     public Transform ballSpawnPoint;
     public DamageCollectable damageCollectable_prefab;
     public SpeedCollectable speedCollectable_prefab;
+    public GameObject ballPrefab;
+    public Transform ballSpawnPoint;
 
     public int numberOfHealthCollected = 0;
 
@@ -52,6 +65,34 @@ public class GameMechanics : NetworkBehaviour
     public void AddGoal(PlayerObjectController.Team scoringTeam)
     {
         if (scoringTeam == PlayerObjectController.Team.Red)
+        {
+            redScore++;
+        }
+        else if (scoringTeam == PlayerObjectController.Team.Blue)
+        {
+            blueScore++;
+        }
+
+        RpcUpdateScoreUI(redScore, blueScore);
+    }
+
+    [ClientRpc]
+    void RpcUpdateScoreUI(int red, int blue)
+    {
+        ScoreUI.Instance.UpdateScore(red, blue);
+    }
+
+    [Server]
+    public void RespawnBall()
+    {
+        GameObject newBall = Instantiate(ballPrefab, ballSpawnPoint.position, Quaternion.identity);
+        NetworkServer.Spawn(newBall);
+    }
+
+    [Server]
+    public void AddGoal(PlayerObjectController.Team scoringTeam)
+    {
+        if(scoringTeam == PlayerObjectController.Team.Red)
         {
             redScore++;
         }
