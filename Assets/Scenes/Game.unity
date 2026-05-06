@@ -1366,9 +1366,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 684934479}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ecded6d8561bce41b81b1a520a4733b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ce6cf7f2b0c6504da619fb85e120199, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreUI
+  redScoreText: {fileID: 757926730}
+  blueScoreText: {fileID: 576820199}
 --- !u!1 &691280187
 GameObject:
   m_ObjectHideFlags: 0
@@ -2265,10 +2267,10 @@ MonoBehaviour:
   numberOfHealthCollectedText: {fileID: 891283450}
   collectables: {fileID: 736442070}
   healthCollectable_prefab: {fileID: 5118511902865356292, guid: bce86211df527d0468d92d5c738ff465, type: 3}
-  ballPrefab: {fileID: 0}
+  ballPrefab: {fileID: 1405244329705486080, guid: e5ff2a32a5af2904f98df31945522e14, type: 3}
   ballSpawnPoint: {fileID: 1382936139}
-  damageCollectable_prefab: {fileID: 0}
-  speedCollectable_prefab: {fileID: 0}
+  damageCollectable_prefab: {fileID: 8113818171935782020, guid: 61e7564479dddb14cbb1d18201334ebb, type: 3}
+  speedCollectable_prefab: {fileID: 3915171603290986589, guid: ac0c8e2d5235878429aea40440b89eca, type: 3}
   numberOfHealthCollected: 0
 --- !u!114 &1731722314
 MonoBehaviour:
