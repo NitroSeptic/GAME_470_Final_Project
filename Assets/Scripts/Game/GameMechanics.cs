@@ -6,12 +6,23 @@ using Mirror.BouncyCastle.Crypto.Engines;
 
 public class GameMechanics : NetworkBehaviour
 {
+    public static GameMechanics Instance;
+
+    [SyncVar] public int redScore = 0;
+    [SyncVar] public int blueScore = 0;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     public Camera scene_camera;
     public Text numberOfHealthCollectedText;
     public Transform collectables;
     public HealthCollectable healthCollectable_prefab;
     public DamageCollectable damageCollectable_prefab;
     public SpeedCollectable speedCollectable_prefab;
+    public GameObject ballPrefab;
+    public Transform ballSpawnPoint;
 
     public int numberOfHealthCollected = 0;
 
@@ -29,6 +40,34 @@ public class GameMechanics : NetworkBehaviour
             StartCoroutine(Srv_spawnSpeedCoroutine());
         }
         
+    }
+
+    [Server]
+    public void RespawnBall()
+    {
+        GameObject newBall = Instantiate(ballPrefab, ballSpawnPoint.position, Quaternion.identity);
+        NetworkServer.Spawn(newBall);
+    }
+
+    [Server]
+    public void AddGoal(PlayerObjectController.Team scoringTeam)
+    {
+        if(scoringTeam == PlayerObjectController.Team.Red)
+        {
+            redScore++;
+        }
+        else if (scoringTeam == PlayerObjectController.Team.Blue)
+        {
+            blueScore++;
+        }
+
+        RpcUpdateScoreUI(redScore, blueScore);
+    }
+
+    [ClientRpc]
+    void RpcUpdateScoreUI(int red, int blue)
+    {
+        ScoreUI.Instance.UpdateScore(red, blue);
     }
 
     [Server]
