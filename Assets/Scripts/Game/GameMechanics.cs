@@ -72,11 +72,11 @@ public class GameMechanics : NetworkBehaviour
     [Server]
     private IEnumerator Srv_SpawnHealthCoroutine()
     {
-        yield return new WaitForSeconds(0.1f); //wait for network readiness
+        yield return new WaitForSeconds(1.5f); //wait for network readiness
 
         while (true)
         {
-            yield return new WaitForSeconds(1.5f); //Check once per second
+            yield return new WaitForSeconds(1.0f); //Check once per second
 
             //Check how many health prefabs there are currently  //Nate here, this now checks for all collectables, just letting you know that : )
             powerup_spawned = collectables.childCount;
@@ -97,11 +97,11 @@ public class GameMechanics : NetworkBehaviour
     [Server]
     private IEnumerator Srv_spawnDamageCoroutine()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(2.51f);
 
         while (true)
         {
-            yield return new WaitForSeconds(2.51f); // making the timers different to adjust rarity of spawns for different powerups, allowing for a variety to spawn at different times -Nate
+            yield return new WaitForSeconds(1.0f); // making the timers different to adjust rarity of spawns for different powerups, allowing for a variety to spawn at different times -Nate
 
             powerup_spawned = collectables.childCount;
             while(powerup_spawned < 3)
@@ -119,11 +119,11 @@ public class GameMechanics : NetworkBehaviour
     [Server]
     private IEnumerator Srv_spawnSpeedCoroutine()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(2.2f);
 
         while (true)
         {
-            yield return new WaitForSeconds(2.2f);
+            yield return new WaitForSeconds(1.0f);
 
             powerup_spawned = collectables.childCount;
             while (powerup_spawned < 3)
